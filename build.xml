@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE project []>
+
+<project name="cgds-java" default="usage" basedir=".">
+
+	<!-- ========== Initialize Properties =================================== -->
+	<property environment="env" />
+	<property name="project.home" value="${basedir}" />
+	<property name="project.build" value="${project.home}/build" />
+	<property name="project.src" value="${project.home}/src" />
+	<property name="project.doc" value="${project.home}/doc" />
+	<property name="project.lib" value="${project.home}/lib" />
+	<property name="project.config" value="${project.home}/config" />
+	<property name="project.target" value="${project.home}/target" />
+	<property name="project.test-output" value="${project.home}/test-output" />
+	<property name="jar.dir" value="${project.build}/jar" />
+
+	<target name="setClassPath" unless="project.classpath">
+		<path id="classpath_jars">
+			<fileset dir="${project.lib}">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+		<pathconvert pathsep=";" property="project.classpath" refid="classpath_jars" />
+	</target>
+
+	<target name="init" depends="setClassPath">
+		<tstamp>
+			<format property="start.time" pattern="MM/dd/yyyy hh:mm aa" />
+		</tstamp>
+		<condition property="ANT" value="${env.ANT_HOME}/bin/ant.bat" else="${env.ANT_HOME}/bin/ant">
+			<os family="windows" />
+		</condition>
+	</target>
+
+	<!-- clean -->
+	<target name="clean">
+		<delete dir="${project.build}" />
+		<delete dir="${project.home}/bin" />
+		<delete dir="${project.lib}" />
+		<delete dir="${project.target}" />
+		<delete dir="${project.test-output}" />
+	</target>
+
+	<!-- compile -->
+	<target name="compile" depends="init" description="Compiles source code, and copies it onto the build class path.">
+		<delete includeemptydirs="true" quiet="true">
+			<fileset dir="${project.build}" includes="**/*" />
+		</delete>
+		<echo message="making directory..." />
+		<mkdir dir="${project.build}" />
+		<echo message="classpath------: ${project.classpath}" />
+		<echo message="${project.classpath}" />
+		<echo message="compiling..." />
+		<javac debug="true" destdir="${project.build}" srcdir="${project.src}" classpath="${project.classpath}">
+		</javac>
+	</target>
+
+	<!-- jar -->
+	<target name="jar" depends="compile">
+		<mkdir dir="${jar.dir}" />
+		<mkdir dir="${project.build}/lib" />
+		<copy todir="${project.build}/lib" flatten="true">
+			<path refid="classpath_jars" />
+		</copy>
+
+		<manifestclasspath property="manifest.classpath" jarfile="${jar.dir}/cgds-java.jar">
+			<classpath refid="classpath_jars" />
+		</manifestclasspath>
+
+		<jar destfile="${jar.dir}/cgds-java.jar" basedir="${project.build}">
+			<manifest>
+				<attribute name="Main-Class" value="${main-class}" />
+				<attribute name="Class-Path" value="${manifest.classpath}" />
+			</manifest>
+			<fileset dir="${project.config}">
+			      <include name="*.properties"/>
+			</fileset>
+		</jar>
+	</target>
+
+	<!-- usage -->
+	<target name="usage">
+		<echo>
+            "ant compile" will compile the application. "ant jar" will build the jar file for the library
+        </echo>
+	</target>
+
+</project>
