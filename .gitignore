@@ -1,0 +1,7 @@
+/build/
+/test-output/
+/target/
+.project
+.settings
+.classpath
+/bin/
