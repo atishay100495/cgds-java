@@ -74,7 +74,7 @@
 				<attribute name="Class-Path" value="${manifest.classpath}" />
 			</manifest>
 			<fileset dir="${project.config}">
-			      <include name="*.properties"/>
+				<include name="*.properties" />
 			</fileset>
 		</jar>
 	</target>
