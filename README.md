@@ -19,3 +19,7 @@ Steps to run tests:  <br>
 6. Set VM Argument for 'project.home'. Eg. -Dproject.home=/home/atishay/gsoc2016/cbioportal/workspace/cgds-java  <br>
 7. Click Run  <br>
 <br>
+The latest test results can be downloaded here: <br>
+https://docs.google.com/uc?authuser=0&id=0B15Tsm1HLWRJTGtKYkF0VlJXTG8&export=download 
+<br>
+
