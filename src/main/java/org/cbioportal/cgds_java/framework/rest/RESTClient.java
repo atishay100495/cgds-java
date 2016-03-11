@@ -31,12 +31,12 @@ import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jsonp.JsonProcessingFeature;
 
-
 public class RESTClient {
-	
+
 	public static final int READ_TIMEOUT = 600 * 1000;
 	public static final int CONNECT_TIMEOUT = 180 * 1000;
-	public static final int MAX_ENTITY_SIZE_LOGGED = Integer.getInteger("restClient.log.maxEntitySize", (1024 * 1024 * 2));
+	public static final int MAX_ENTITY_SIZE_LOGGED = Integer.getInteger("restClient.log.maxEntitySize",
+			(1024 * 1024 * 2));
 
 	protected Client client;
 	protected WebTarget webTarget;
@@ -46,7 +46,7 @@ public class RESTClient {
 	public RESTClient(String baseURL) {
 		this(baseURL, true);
 	}
-	
+
 	public RESTClient(String baseURL, boolean logEntity) {
 		ClientBuilder clientBuilder = null;
 		clientBuilder = ClientBuilder.newBuilder();
@@ -54,30 +54,7 @@ public class RESTClient {
 		clientBuilder = clientBuilder.hostnameVerifier(getHostnameVerifier());
 		clientBuilder = clientBuilder.property(ClientProperties.FOLLOW_REDIRECTS, true);
 		client = clientBuilder.build();
-		if(logEntity)
-			client = client.register(new LoggingFilter(logger, MAX_ENTITY_SIZE_LOGGED));
-		else
-			client = client.register(new LoggingFilter(logger, logEntity));
-		client = client.register(JsonProcessingFeature.class).property(JsonGenerator.PRETTY_PRINTING, true);
-		client = client.register(new CookieHandler());
-		client = client.property(ClientProperties.CONNECT_TIMEOUT, Integer.valueOf(CONNECT_TIMEOUT));
-		client = client.property(ClientProperties.READ_TIMEOUT, Integer.valueOf(READ_TIMEOUT));
-		webTarget = client.target(baseURL);
-	}
-	
-	protected RESTClient(String baseURL, Class<?>[] additionalClassesForRegistration, boolean logEntity) {
-		ClientBuilder clientBuilder = null;
-		clientBuilder = ClientBuilder.newBuilder();
-		if(additionalClassesForRegistration != null) {
-			for(Class<?> cls : additionalClassesForRegistration) {
-				clientBuilder = clientBuilder.register(cls);
-			}
-		}
-		clientBuilder = clientBuilder.sslContext(getSslContext());
-		clientBuilder = clientBuilder.hostnameVerifier(getHostnameVerifier());
-		clientBuilder = clientBuilder.property(ClientProperties.FOLLOW_REDIRECTS, true);
-		client = clientBuilder.build();
-		if(logEntity)
+		if (logEntity)
 			client = client.register(new LoggingFilter(logger, MAX_ENTITY_SIZE_LOGGED));
 		else
 			client = client.register(new LoggingFilter(logger, logEntity));
@@ -88,7 +65,29 @@ public class RESTClient {
 		webTarget = client.target(baseURL);
 	}
 
-	
+	protected RESTClient(String baseURL, Class<?>[] additionalClassesForRegistration, boolean logEntity) {
+		ClientBuilder clientBuilder = null;
+		clientBuilder = ClientBuilder.newBuilder();
+		if (additionalClassesForRegistration != null) {
+			for (Class<?> cls : additionalClassesForRegistration) {
+				clientBuilder = clientBuilder.register(cls);
+			}
+		}
+		clientBuilder = clientBuilder.sslContext(getSslContext());
+		clientBuilder = clientBuilder.hostnameVerifier(getHostnameVerifier());
+		clientBuilder = clientBuilder.property(ClientProperties.FOLLOW_REDIRECTS, true);
+		client = clientBuilder.build();
+		if (logEntity)
+			client = client.register(new LoggingFilter(logger, MAX_ENTITY_SIZE_LOGGED));
+		else
+			client = client.register(new LoggingFilter(logger, logEntity));
+		client = client.register(JsonProcessingFeature.class).property(JsonGenerator.PRETTY_PRINTING, true);
+		client = client.register(new CookieHandler());
+		client = client.property(ClientProperties.CONNECT_TIMEOUT, Integer.valueOf(CONNECT_TIMEOUT));
+		client = client.property(ClientProperties.READ_TIMEOUT, Integer.valueOf(READ_TIMEOUT));
+		webTarget = client.target(baseURL);
+	}
+
 	protected RESTClient(String baseURL, Class<?>[] additionalClassesForRegistration) {
 		this(baseURL, additionalClassesForRegistration, true);
 	}
@@ -106,7 +105,7 @@ public class RESTClient {
 		}
 		clientBuilder = clientBuilder.property(ClientProperties.FOLLOW_REDIRECTS, true);
 		client = clientBuilder.build();
-		if(logEntity)
+		if (logEntity)
 			client = client.register(new LoggingFilter(logger, MAX_ENTITY_SIZE_LOGGED));
 		else
 			client = client.register(new LoggingFilter(logger, logEntity));
@@ -117,7 +116,7 @@ public class RESTClient {
 		client = client.property(ClientProperties.READ_TIMEOUT, Integer.valueOf(READ_TIMEOUT));
 		webTarget = client.target(baseURL);
 	}
-	
+
 	protected RESTClient(String baseURL, String userName, String password, boolean isDigest) {
 		this(baseURL, userName, password, isDigest, true);
 	}
@@ -131,12 +130,10 @@ public class RESTClient {
 				return null;
 			}
 
-			public void checkServerTrusted(X509Certificate[] chain,
-					String authType) throws CertificateException {
+			public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 			}
 
-			public void checkClientTrusted(X509Certificate[] chain,
-					String authType) throws CertificateException {
+			public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 			}
 		} };
 		SSLContext ctx = null;
@@ -152,10 +149,10 @@ public class RESTClient {
 		HttpsURLConnection.setDefaultSSLSocketFactory(ctx.getSocketFactory());
 		return ctx;
 	}
-	
+
 	public static HostnameVerifier getHostnameVerifier() {
 		return (new HostnameVerifier() {
-			
+
 			public boolean verify(String hostname, SSLSession session) {
 				return true;
 			}
@@ -163,30 +160,30 @@ public class RESTClient {
 	}
 
 	public Response sendPOSTRequest(String commandURL, JsonObject entity) {
-		Builder builder = webTarget.path(commandURL)
-				.request(MediaType.APPLICATION_JSON);
+		Builder builder = webTarget.path(commandURL).request(MediaType.APPLICATION_JSON);
 		return builder.post(Entity.json(entity));
 	}
 
-	public Response sendPOSTRequest(String commandURL, Entity<?> entity, MultivaluedMap<String, Object> headers, String... mediaTypes) {
-		Builder builder = webTarget.path(commandURL)
-				.request(mediaTypes);
-		if(headers != null && !headers.isEmpty())
-			for(String headerKey : headers.keySet()) {
+	public Response sendPOSTRequest(String commandURL, Entity<?> entity, MultivaluedMap<String, Object> headers,
+			String... mediaTypes) {
+		Builder builder = webTarget.path(commandURL).request(mediaTypes);
+		if (headers != null && !headers.isEmpty())
+			for (String headerKey : headers.keySet()) {
 				builder = builder.header(headerKey, headers.getFirst(headerKey));
 			}
 		return builder.post(entity);
 	}
-	
-	public Response sendPOSTRequest(String commandURL,Map<String, String[]> queryParameters, Entity<?> entity, MultivaluedMap<String, Object> headers, String... mediaTypes) {
+
+	public Response sendPOSTRequest(String commandURL, Map<String, String[]> queryParameters, Entity<?> entity,
+			MultivaluedMap<String, Object> headers, String... mediaTypes) {
 		Builder builder = null;
 		WebTarget webTarget = this.webTarget.path(commandURL);
-		if(queryParameters != null && queryParameters.size() > 0)
-			for(String key : queryParameters.keySet())
-				webTarget = webTarget.queryParam(key, (Object[])queryParameters.get(key));
+		if (queryParameters != null && queryParameters.size() > 0)
+			for (String key : queryParameters.keySet())
+				webTarget = webTarget.queryParam(key, (Object[]) queryParameters.get(key));
 		builder = webTarget.request(mediaTypes);
-		if(headers != null && !headers.isEmpty())
-			for(String headerKey : headers.keySet()) {
+		if (headers != null && !headers.isEmpty())
+			for (String headerKey : headers.keySet()) {
 				builder = builder.header(headerKey, headers.getFirst(headerKey));
 			}
 		return builder.post(entity);
@@ -194,22 +191,22 @@ public class RESTClient {
 
 	public Response sendGETRequest(String commandURL, Map<String, String[]> queryParameters) {
 		WebTarget webTarget = this.webTarget.path(commandURL);
-		if(queryParameters != null && queryParameters.size() > 0)
-			for(String key : queryParameters.keySet())
-				webTarget = webTarget.queryParam(key, (Object[])queryParameters.get(key));
-		return webTarget.
-				request(MediaType.APPLICATION_JSON).get();
+		if (queryParameters != null && queryParameters.size() > 0)
+			for (String key : queryParameters.keySet())
+				webTarget = webTarget.queryParam(key, (Object[]) queryParameters.get(key));
+		return webTarget.request(MediaType.APPLICATION_JSON).get();
 	}
 
-	public Response sendGETRequest(String commandURL, Map<String, String[]> queryParameters, MultivaluedMap<String, Object> headers, String... mediaTypes) {
+	public Response sendGETRequest(String commandURL, Map<String, String[]> queryParameters,
+			MultivaluedMap<String, Object> headers, String... mediaTypes) {
 		Builder builder = null;
 		WebTarget webTarget = this.webTarget.path(commandURL);
-		if(queryParameters != null && queryParameters.size() > 0)
-			for(String key : queryParameters.keySet())
-				webTarget = webTarget.queryParam(key, (Object[])queryParameters.get(key));
+		if (queryParameters != null && queryParameters.size() > 0)
+			for (String key : queryParameters.keySet())
+				webTarget = webTarget.queryParam(key, (Object[]) queryParameters.get(key));
 		builder = webTarget.request(mediaTypes);
-		if(headers != null && !headers.isEmpty())
-			for(String headerKey : headers.keySet()) {
+		if (headers != null && !headers.isEmpty())
+			for (String headerKey : headers.keySet()) {
 				builder = builder.header(headerKey, headers.getFirst(headerKey));
 			}
 		return builder.get();
@@ -219,36 +216,37 @@ public class RESTClient {
 		Builder builder = webTarget.path(commandURL).request(MediaType.APPLICATION_JSON);
 		return builder.delete();
 	}
-    
+
 	public Response sendDELETERequest(String commandURL, Map<String, String[]> queryParameters) {
 		Builder builder = null;
 		WebTarget webTarget = this.webTarget.path(commandURL);
-		if(queryParameters != null && queryParameters.size() > 0)
-			for(String key : queryParameters.keySet())
-				webTarget = webTarget.queryParam(key, (Object[])queryParameters.get(key));
+		if (queryParameters != null && queryParameters.size() > 0)
+			for (String key : queryParameters.keySet())
+				webTarget = webTarget.queryParam(key, (Object[]) queryParameters.get(key));
 		builder = webTarget.request(MediaType.APPLICATION_JSON);
 		return builder.delete();
 	}
-	
-	public Response sendDELETERequest(String commandURL, Map<String, String[]> queryParameters, MultivaluedMap<String, Object> headers) {
+
+	public Response sendDELETERequest(String commandURL, Map<String, String[]> queryParameters,
+			MultivaluedMap<String, Object> headers) {
 		Builder builder = null;
 		WebTarget webTarget = this.webTarget.path(commandURL);
-		if(queryParameters != null && queryParameters.size() > 0)
-			for(String key : queryParameters.keySet())
-				webTarget = webTarget.queryParam(key, (Object[])queryParameters.get(key));
+		if (queryParameters != null && queryParameters.size() > 0)
+			for (String key : queryParameters.keySet())
+				webTarget = webTarget.queryParam(key, (Object[]) queryParameters.get(key));
 		builder = webTarget.request(MediaType.APPLICATION_JSON);
-		if(headers != null && !headers.isEmpty()) {
-			for(String headerKey : headers.keySet()) {
+		if (headers != null && !headers.isEmpty()) {
+			for (String headerKey : headers.keySet()) {
 				builder = builder.header(headerKey, headers.getFirst(headerKey));
 			}
 		}
 		return builder.delete();
 	}
-	
+
 	public Response sendDELETERequest(String commandURL, MultivaluedMap<String, Object> headers, String... mediaTypes) {
 		Builder builder = webTarget.path(commandURL).request(mediaTypes);
-		if(headers != null && !headers.isEmpty())
-			for(String headerKey : headers.keySet()) {
+		if (headers != null && !headers.isEmpty())
+			for (String headerKey : headers.keySet()) {
 				builder = builder.header(headerKey, headers.getFirst(headerKey));
 			}
 		return builder.delete();
@@ -261,8 +259,8 @@ public class RESTClient {
 
 	public Response sendHEADRequest(String commandURL, MultivaluedMap<String, Object> headers, String... mediaTypes) {
 		Builder builder = webTarget.path(commandURL).request(mediaTypes);
-		if(headers != null && !headers.isEmpty())
-			for(String headerKey : headers.keySet()) {
+		if (headers != null && !headers.isEmpty())
+			for (String headerKey : headers.keySet()) {
 				builder = builder.header(headerKey, headers.getFirst(headerKey));
 			}
 		return builder.head();
@@ -272,25 +270,27 @@ public class RESTClient {
 		Builder builder = webTarget.path(commandURL).request(MediaType.APPLICATION_FORM_URLENCODED);
 		return builder.put(Entity.json(entity));
 	}
-	
-	public Response sendPUTRequest(String commandURL, Entity<?> entity, MultivaluedMap<String, Object> headers, String... mediaTypes) {
+
+	public Response sendPUTRequest(String commandURL, Entity<?> entity, MultivaluedMap<String, Object> headers,
+			String... mediaTypes) {
 		Builder builder = webTarget.path(commandURL).request(mediaTypes);
-		if(headers != null && !headers.isEmpty())
-			for(String headerKey : headers.keySet()) {
+		if (headers != null && !headers.isEmpty())
+			for (String headerKey : headers.keySet()) {
 				builder = builder.header(headerKey, headers.getFirst(headerKey));
 			}
 		return builder.put(entity);
 	}
-	
-	public Response sendPUTRequest(String commandURL,Map<String, String[]> queryParameters, Entity<?> entity, MultivaluedMap<String, Object> headers, String... mediaTypes) {
+
+	public Response sendPUTRequest(String commandURL, Map<String, String[]> queryParameters, Entity<?> entity,
+			MultivaluedMap<String, Object> headers, String... mediaTypes) {
 		Builder builder = null;
 		WebTarget webTarget = this.webTarget.path(commandURL);
-		if(queryParameters != null && queryParameters.size() > 0)
-			for(String key : queryParameters.keySet())
-				webTarget = webTarget.queryParam(key, (Object[])queryParameters.get(key));
+		if (queryParameters != null && queryParameters.size() > 0)
+			for (String key : queryParameters.keySet())
+				webTarget = webTarget.queryParam(key, (Object[]) queryParameters.get(key));
 		builder = webTarget.request(mediaTypes);
-		if(headers != null && !headers.isEmpty())
-			for(String headerKey : headers.keySet()) {
+		if (headers != null && !headers.isEmpty())
+			for (String headerKey : headers.keySet()) {
 				builder = builder.header(headerKey, headers.getFirst(headerKey));
 			}
 		return builder.put(entity);

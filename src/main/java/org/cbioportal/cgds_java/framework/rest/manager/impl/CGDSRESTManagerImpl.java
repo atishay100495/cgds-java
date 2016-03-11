@@ -9,22 +9,22 @@ import org.cbioportal.cgds_java.framework.rest.manager.api.CGDSRESTManager;
 import org.cbioportal.cgds_java.framework.rest.result.RESTResult;
 import org.cbioportal.cgds_java.framework.util.CGDSPropertiesReader;
 
-public class CGDSRESTManagerImpl extends RESTManagerImpl implements CGDSRESTManager{
+public class CGDSRESTManagerImpl extends RESTManagerImpl implements CGDSRESTManager {
 
-	protected static final CGDSPropertiesReader CGDS_PROPERTIES_READER = CGDSPropertiesReader.getInstance();	
+	protected static final CGDSPropertiesReader CGDS_PROPERTIES_READER = CGDSPropertiesReader.getInstance();
 
 	protected final String cgdsRestEndpoint = CGDS_PROPERTIES_READER.getCGDSRESTEndpoint();
 
 	public CGDSRESTManagerImpl() {
 		this.restClient = new RESTClient(cgdsRestEndpoint);
 	}
-	
+
 	public RESTResult get(String commandURL, Map<String, String[]> queryParameters) {
 		Response response = null;
 		response = restClient.sendGETRequest(commandURL, queryParameters, HEADERS, APPLICATION_JSON);
 		return (new RESTResult(response));
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return "CGDS REST Manager Implementation";
@@ -89,5 +89,5 @@ public class CGDSRESTManagerImpl extends RESTManagerImpl implements CGDSRESTMana
 	public RESTResult getStudies(String commandURL, Map<String, String[]> queryParameters) {
 		return get(commandURL, queryParameters);
 	}
-	
+
 }

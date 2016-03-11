@@ -18,4 +18,3 @@ public abstract class RESTManagerImpl implements RESTManager {
 	protected RESTClient restClient;
 
 }
-

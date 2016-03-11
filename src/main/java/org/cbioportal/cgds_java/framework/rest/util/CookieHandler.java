@@ -13,17 +13,17 @@ import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.NewCookie;
 
 public class CookieHandler implements ClientResponseFilter, ClientRequestFilter {
-	
+
 	private Map<String, NewCookie> newCookies = null;
-	
+
 	@Override
 	public void filter(ClientRequestContext clientRequestContext) throws IOException {
-		if(this.newCookies != null && !this.newCookies.isEmpty()) {
+		if (this.newCookies != null && !this.newCookies.isEmpty()) {
 			List<Object> cookieValues = new ArrayList<>();
 			String value = null;
-			for(String key : this.newCookies.keySet()) {
+			for (String key : this.newCookies.keySet()) {
 				NewCookie cookie = this.newCookies.get(key);
-				if(value == null)
+				if (value == null)
 					value = cookie.getName() + "=" + cookie.getValue() + ";";
 				else
 					value = value + " " + cookie.getName() + "=" + cookie.getValue() + ";";
@@ -34,12 +34,13 @@ public class CookieHandler implements ClientResponseFilter, ClientRequestFilter 
 	}
 
 	@Override
-	public void filter(ClientRequestContext clientRequestContext, ClientResponseContext clientResponseContext) throws IOException {
+	public void filter(ClientRequestContext clientRequestContext, ClientResponseContext clientResponseContext)
+			throws IOException {
 		@SuppressWarnings("unused")
 		List<?> headerCookies = null;
-		if(clientResponseContext.getCookies() != null) {
-			if((headerCookies = clientResponseContext.getHeaders().get("Set-Cookie")) != null) {
-				if(this.newCookies == null)
+		if (clientResponseContext.getCookies() != null) {
+			if ((headerCookies = clientResponseContext.getHeaders().get("Set-Cookie")) != null) {
+				if (this.newCookies == null)
 					this.newCookies = new HashMap<>();
 				this.newCookies.putAll(clientResponseContext.getCookies());
 			}
