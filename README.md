@@ -11,6 +11,13 @@ Steps: <br>
 <br>
 
 Steps to run tests:  <br>
+Running tests from Linux: <br>
+1. cd cgds-java <br>
+2. mvn initialize <br>
+3. ant compile <br>
+4. java -cp "build:`echo lib/*.jar | tr ' ' ':'`" -Dproject.home=. org.testng.TestNG testng.xml  <br>
+
+Running tests from Eclipse: <br>
 1. Install TestNG plugin in Eclipse  <br>
 2. Right-click test file "cgds-java/src/test/java/org/cbioportal/cgds_java/tests/CGDSJavaAPITest.java". Select Run-As -> Run-Configurations  <br>
 3. Double click TestNG in left navigation bar to create a TestNG profile.  <br>
