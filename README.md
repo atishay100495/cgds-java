@@ -15,7 +15,7 @@ Running tests from Linux: <br>
 1. cd cgds-java <br>
 2. mvn initialize <br>
 3. ant compile <br>
-4. java -cp "build:`echo lib/*.jar | tr ' ' ':'`" -Dproject.home=. org.testng.TestNG testng.xml  <br>
+4. java -cp "build:\`echo lib/*.jar | tr ' ' ':'\`" -Dproject.home=. org.testng.TestNG testng.xml  <br>
 
 Running tests from Eclipse: <br>
 1. Install TestNG plugin in Eclipse  <br>
