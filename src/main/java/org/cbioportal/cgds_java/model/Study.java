@@ -12,7 +12,7 @@ public class Study extends AbstractResource{
 	@JsonField("name") protected String name;
 	@JsonField("short_name") protected String short_name;
 	@JsonField("description") protected String description;
-	@JsonField("pmid") protected String pmid;
+	@JsonField("pmid") protected Integer pmid = null;
 	@JsonField("citation") protected String citation;
 	@JsonField("groups") protected String groups;
 	
@@ -31,7 +31,7 @@ public class Study extends AbstractResource{
 	public String getDescription() {
 		return description;
 	}
-	public String getPmid() {
+	public Integer getPmid() {
 		return pmid;
 	}
 	public String getCitation() {
